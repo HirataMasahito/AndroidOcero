@@ -69,9 +69,9 @@ public class GameManager {
 	public void GameReset() {
 		gameStartFlg = true;
 		passFlg = false;
-		gameCnt = 0;
-
-		PlayerList.set(1, sm.getAiMode());
+		gameCnt = 1;
+		PlayerList.set(0, sm.getBAiMode());
+		PlayerList.set(1, sm.getWAiMode());
 		GAME_BORD.BordInit();
 
 		sm.drawBord(GAME_BORD);
@@ -95,16 +95,8 @@ public class GameManager {
 
 		AiBase turnPlayer = PlayerList.get(gameCnt % 2);
 
-//		System.out.println(turnPlayer.getMyColor().getName() + "の番");
-
 		setHand = turnPlayer.WhereSet(GAME_BORD);
 		if (setHand == null) {
-//			System.out.println(turnPlayer.getMyColor().getName() + "はパスします");
-
-			if (passFlg) {
-//				System.out.println("どちらもパスしたため、ゲームを終了します。");
-			}
-
 			passFlg = true;
 		} else {
 			GAME_BORD.DoSet(setHand, turnPlayer.getMyColor(), true);
@@ -114,7 +106,6 @@ public class GameManager {
 
 		sm.drawBord(GAME_BORD);
 
-//		System.out.println(GAME_BORD.toString());
 	}
 
 

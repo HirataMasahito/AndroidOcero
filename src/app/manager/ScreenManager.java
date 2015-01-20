@@ -1,10 +1,17 @@
 package app.manager;
 
 import game.ai.AiBase;
+import game.ai.impl.HiranoTest;
+import game.ai.impl.Human;
+import game.ai.impl.Ikeda;
+import game.ai.impl.MH_Spart;
 import game.ai.impl.MaxStone;
 import game.ai.impl.MaxStoneR;
+import game.ai.impl.NoSafety;
 import game.ai.impl.OneWay;
+import game.ai.impl.SN_Ai;
 import game.ai.impl.SteadyR;
+import game.ai.impl.Uchida1;
 import game.othello.Bord;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -38,7 +45,10 @@ public class ScreenManager {
 	private static int BTN_ID = 0;
 
 	private static int LST_ROW_ID = 10;
-	private static int LST_ID = 0;
+	private static int LST_ID = 1;
+
+	private static int LST_ROW_B_ID = 11;
+	private static int LST_B_ID = 1;
 
 	private Bitmap NONE_BMP;
 	private Bitmap BLACK_BMP;
@@ -47,7 +57,8 @@ public class ScreenManager {
 	private Context context;
 	private TableLayout tableLayout;
 
-	private ArrayAdapter<AiBase> arAdp;
+	private ArrayAdapter<AiBase> arAdpW;
+	private ArrayAdapter<AiBase> arAdpB;
 
 	public ScreenManager(Context context, TableLayout tableLayout) {
 		this.context = context;
@@ -57,13 +68,35 @@ public class ScreenManager {
 		BLACK_BMP = BitmapFactory.decodeResource(context.getResources(), R.drawable.black);
 		WHITE_BMP = BitmapFactory.decodeResource(context.getResources(), R.drawable.white);
 
-		arAdp = new ArrayAdapter<AiBase>(context, android.R.layout.simple_spinner_item);
-		arAdp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		arAdpW = new ArrayAdapter<AiBase>(context, android.R.layout.simple_spinner_item);
+		arAdpW.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-		arAdp.add(new OneWay(Stone.WHITE));
-		arAdp.add(new MaxStone(Stone.WHITE));
-		arAdp.add(new MaxStoneR(Stone.WHITE));
-		arAdp.add(new SteadyR(Stone.WHITE));
+		arAdpW.add(new Human(Stone.WHITE));
+		arAdpW.add(new OneWay(Stone.WHITE));
+		arAdpW.add(new MaxStone(Stone.WHITE));
+		arAdpW.add(new MaxStoneR(Stone.WHITE));
+		arAdpW.add(new SteadyR(Stone.WHITE));
+		arAdpW.add(new NoSafety(Stone.WHITE));
+		arAdpW.add(new MH_Spart(Stone.WHITE));
+		arAdpW.add(new Uchida1(Stone.WHITE));
+		arAdpW.add(new SN_Ai(Stone.WHITE));
+		arAdpW.add(new Ikeda(Stone.WHITE));
+		arAdpW.add(new HiranoTest(Stone.WHITE));
+
+		arAdpB = new ArrayAdapter<AiBase>(context, android.R.layout.simple_spinner_item);
+		arAdpB.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		arAdpB.add(new Human(Stone.BLACK));
+		arAdpB.add(new OneWay(Stone.BLACK));
+		arAdpB.add(new MaxStone(Stone.BLACK));
+		arAdpB.add(new MaxStoneR(Stone.BLACK));
+		arAdpB.add(new SteadyR(Stone.BLACK));
+		arAdpB.add(new NoSafety(Stone.BLACK));
+		arAdpB.add(new MH_Spart(Stone.BLACK));
+		arAdpB.add(new Uchida1(Stone.BLACK));
+		arAdpB.add(new SN_Ai(Stone.BLACK));
+		arAdpB.add(new Ikeda(Stone.BLACK));
+		arAdpB.add(new HiranoTest(Stone.BLACK));
 
 	}
 
@@ -106,10 +139,14 @@ public class ScreenManager {
 
 		TableRow.LayoutParams trl = new TableRow.LayoutParams();
 		trl.span = Common.X_MAX_LEN;
+		TableRow.LayoutParams trl2= new TableRow.LayoutParams();
+		trl2.span = Common.X_MAX_LEN-1;
+		TableRow.LayoutParams trl3= new TableRow.LayoutParams();
+		trl3.span = 1;
 
 		tableRow.setId(LOG_ROW_ID);
 		tv.setText("MSG");
-		tv.setTextScaleX(5);
+		tv.setTextSize(25);
 		tv.setId(POINT_ID);
 		tableRow.addView(tv, trl);
 		tableLayout.addView(tableRow);
@@ -125,15 +162,36 @@ public class ScreenManager {
 		tableRow2.addView(btn, trl);
 		tableLayout.addView(tableRow2);
 
-		TableRow tableRow3 = new TableRow(context);
+		TableRow tableRow3= new TableRow(context);
+		TextView tvB = new TextView(context);
+		Spinner spnB = new Spinner(context);
+		tvB.setText  ("黒：");
+		tvB.setId(POINT_ID);
+		tableRow3.addView(tvB, trl3);
+
+		tableRow3.setId(LST_ROW_B_ID);
+		spnB.setId(LST_B_ID);
+		spnB.setAdapter(arAdpB);
+
+		tableRow3.addView(spnB, trl2);
+		tableLayout.addView(tableRow3);
+
+
+		TableRow tableRow4 = new TableRow(context);
 		Spinner spn = new Spinner(context);
 
-		tableRow3.setId(LST_ROW_ID);
-		spn.setId(LST_ID);
-		spn.setAdapter(arAdp);
+		TextView tvW = new TextView(context);
+		tvW.setText  ("白：");
+		tvW.setId(POINT_ID);
+		tableRow4.addView(tvW, trl3);
 
-		tableRow3.addView(spn, trl);
-		tableLayout.addView(tableRow3);
+		tableRow4.setId(LST_ROW_ID);
+		spn.setId(LST_ID);
+		spn.setAdapter(arAdpW);
+
+		tableRow4.addView(spn, trl2);
+		tableLayout.addView(tableRow4);
+
 
 	}
 
@@ -142,7 +200,7 @@ public class ScreenManager {
 		// 画像の拡大サイズを取得
 		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		Display disp = wm.getDefaultDisplay();
-		float xSize = ((float) disp.getWidth() / (float) 8) / bmpWidth;
+		float xSize = ((float) disp.getWidth() / (float) 8) / bmpWidth ;
 
 		Pos workPos = new Pos();
 		for (int y = 0; y < Common.Y_MAX_LEN; y++) {
@@ -174,18 +232,22 @@ public class ScreenManager {
 
 		int blackCnt = bord.GetCount(Stone.BLACK);
 		int whiteCnt = bord.GetCount(Stone.WHITE);
-		tv.setText("黒:" + blackCnt + "白:" + whiteCnt);
+		tv.setText("黒:" + blackCnt + "\r\n白:" + whiteCnt);
 
 	}
 
-	public AiBase getAiMode() {
+	public AiBase getBAiMode() {
+		TableRow tr = (TableRow) tableLayout.getChildAt(LST_ROW_B_ID);
+		Spinner sp = (Spinner) tr.getChildAt(LST_B_ID);
+		AiBase retAi = (AiBase) sp.getSelectedItem();
+		return retAi;
+	}
+
+	public AiBase getWAiMode() {
 		TableRow tr = (TableRow) tableLayout.getChildAt(LST_ROW_ID);
 		Spinner sp = (Spinner) tr.getChildAt(LST_ID);
-
 		AiBase retAi = (AiBase) sp.getSelectedItem();
-
 		return retAi;
-
 	}
 
 }

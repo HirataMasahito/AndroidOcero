@@ -20,7 +20,7 @@ public class app extends Activity {
 		setContentView(R.layout.main);
 		TableLayout tableLayout = (TableLayout) findViewById(R.id.TableLayout01);
 		 AiBase player1 = new Human(Stone.BLACK);
-		 AiBase player2 = new OneWay(Stone.WHITE);
+		 AiBase player2 = new Human(Stone.WHITE);
 		gc = new GameManager(this,tableLayout, player1, player2);
 		gc.GameStart();
 

@@ -42,8 +42,9 @@ public class BordClickListener implements OnClickListener {
 			}
 
 			gc.NextTurn();
+		}else{
+			gc.NextTurn();
 		}
-		gc.NextTurn();
 	}
 
 }

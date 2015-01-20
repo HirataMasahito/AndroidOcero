@@ -12,6 +12,11 @@ public class Human extends AiBase {
 		super(MyColor);
 	}
 
+	@Override
+	public String toString() {
+
+		return "Human";
+	}
 
 	private Pos setPos;
 
